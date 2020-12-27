@@ -27,7 +27,7 @@ const Product: React.FC<ProductProps> = (props) => {
                     <Card.Title as="div">
                         <strong>{props.name}</strong>
                     </Card.Title>
-                    <Rating value={props.rating} reviews={props.numReviews} />
+                    <Rating value={props.rating} text={`${props.numReviews} reviews`} />
                     <Card.Text as="h3">
                         ${props.price}
                     </Card.Text>

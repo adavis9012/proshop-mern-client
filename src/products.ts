@@ -1,4 +1,17 @@
-const products = [
+export interface ProductInterface {
+  _id: string
+  image: string
+  name: string
+  description: string
+  brand: string
+  category: string
+  price: number
+  countInStock: number
+  rating: number
+  numReviews: number
+}
+
+const products: Array<ProductInterface> = [
   {
     _id: '1',
     name: 'Airpods Wireless Bluetooth Headphones',
@@ -79,4 +92,4 @@ const products = [
   },
 ]
 
-export default products
+export default products;

@@ -2,7 +2,7 @@ import React from 'react';
 
 interface  RatingProps {
     value: number
-    reviews: number
+    text: string
     color?: string
 }
 
@@ -69,7 +69,7 @@ const Rating: React.FC<RatingProps> = (props) => {
                     }
                 />
             </span>
-            <span>{props.reviews && props.reviews}</span>
+            <span>{props.text && props.text}</span>
         </div>
     )
 };

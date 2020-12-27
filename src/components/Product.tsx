@@ -1,5 +1,7 @@
 import React from "react";
+import Rating from "./Rating";
 import {Card} from "react-bootstrap";
+import {Link} from "react-router-dom";
 
 interface ProductProps {
     _id: string
@@ -17,23 +19,19 @@ interface ProductProps {
 const Product: React.FC<ProductProps> = (props) => {
     return (
         <Card className="my-3 p-3 rounded">
-            <a href={`/product/${props._id}`}>
+            <Link to={`/product/${props._id}`}>
                 <Card.Img src={props.image} variant="top"/>
-            </a>
+            </Link>
             <Card.Body>
-                <a href={`/product/${props._id}`}>
+                <Link to={`/product/${props._id}`}>
                     <Card.Title as="div">
                         <strong>{props.name}</strong>
                     </Card.Title>
-                    <Card.Text>
-                        <div className="my-3">
-                            {props.rating} from {props.numReviews} reviews
-                        </div>
-                    </Card.Text>
+                    <Rating value={props.rating} reviews={props.numReviews} />
                     <Card.Text as="h3">
                         ${props.price}
                     </Card.Text>
-                </a>
+                </Link>
             </Card.Body>
         </Card>
     );

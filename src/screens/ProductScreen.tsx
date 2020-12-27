@@ -1,26 +1,51 @@
-import React from 'react';
+import axios from 'axios';
+import React, {useEffect, useState } from 'react';
 import {Col, Row, Button, Image, ListGroup, Card} from 'react-bootstrap';
 import {Link, RouteComponentProps} from 'react-router-dom';
 import Rating from '../components/Rating';
-import products, {ProductInterface} from '../products';
 
 interface MatchParams {
     id: string
 }
 
-interface ProductScreenProps extends RouteComponentProps<MatchParams> {
+interface ProductInterface {
+    _id: string
+    image: string
+    name: string
+    description: string
+    brand: string
+    category: string
+    price: number
+    countInStock: number
+    rating: number
+    numReviews: number
+}
 
+interface ProductScreenProps extends RouteComponentProps<MatchParams>, ProductInterface {
+    
 }
 
 const ProductScreen: React.FC<ProductScreenProps> = (props) => {
-    const product: ProductInterface = getProduct();
+    const [product, setProduct] = useState<ProductInterface>({
+        _id: '',
+        image: '',
+        name: '',
+        description: '',
+        brand: '',
+        category: '',
+        price: 0,
+        countInStock: 0,
+        rating: 0,
+        numReviews: 0,
+    });
 
-    function getProduct(): ProductInterface {
-        // @ts-ignore
-        return products.find(product => {
-            return product._id === props.match.params.id
-        });
-    }
+    useEffect(() => {
+        (async () => {
+            const {data} = await axios.get(`/api/products/${props.match.params.id}`);
+
+            setProduct(data);
+        })();
+    }, []);
 
     return (
         <React.Fragment>

@@ -1,4 +1,10 @@
-import {PRODUCT_LIST_FAIL, PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS} from "../constants/productConstants";
+import {
+    PRODUCT_DETAILS_FAIL,
+    PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS,
+    PRODUCT_LIST_FAIL,
+    PRODUCT_LIST_REQUEST,
+    PRODUCT_LIST_SUCCESS
+} from "../constants/productConstants";
 
 export interface ProductInterface {
     _id: string
@@ -19,11 +25,21 @@ export interface ProductListState {
     error?: string
 }
 
-interface Action extends ProductListState{
+interface ProductListAction extends ProductListState {
     type: 'PRODUCT_LIST_FAIL' | 'PRODUCT_LIST_REQUEST' | 'PRODUCT_LIST_SUCCESS'
 }
 
-export const productListReducer = (state: ProductListState = {products: []}, action: Action) => {
+export interface ProductDetailsState {
+    loading?: boolean
+    product: ProductInterface
+    error?: string
+}
+
+interface ProductDetailsAction extends ProductDetailsState {
+    type: 'PRODUCT_DETAILS_FAIL' | 'PRODUCT_DETAILS_REQUEST' | 'PRODUCT_DETAILS_SUCCESS'
+}
+
+export const productListReducer = (state: ProductListState = {products: []}, action: ProductListAction) => {
     switch (action.type) {
         case PRODUCT_LIST_REQUEST:
             return {
@@ -43,4 +59,41 @@ export const productListReducer = (state: ProductListState = {products: []}, act
         default:
             return state;
     }
+};
+
+export const productDetailsReducer = (state: ProductDetailsState = productDetailsDefaults, action: ProductDetailsAction) => {
+    switch (action.type) {
+        case PRODUCT_DETAILS_REQUEST:
+            return {
+                loading: true,
+                ...state,
+            };
+        case PRODUCT_DETAILS_SUCCESS:
+            return {
+                loading: false,
+                product: action.product,
+            };
+        case PRODUCT_DETAILS_FAIL:
+            return {
+                loading: false,
+                error: action.error,
+            };
+        default:
+            return state;
+    }
+};
+
+const productDetailsDefaults: ProductDetailsState = {
+    product: {
+        _id: '',
+        image: '',
+        name: '',
+        description: '',
+        brand: '',
+        category: '',
+        price: 0,
+        countInStock: 0,
+        rating: 0,
+        numReviews: 0,
+    },
 };

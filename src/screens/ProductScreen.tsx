@@ -1,55 +1,48 @@
 import axios from 'axios';
-import React, {useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {Col, Row, Button, Image, ListGroup, Card} from 'react-bootstrap';
 import {Link, RouteComponentProps} from 'react-router-dom';
 import Rating from '../components/Rating';
+import {useDispatch, useSelector} from "react-redux";
+import {ProductDetailsState} from "../reducers/productReducers";
+import {listProductDetails} from "../actions/productAction";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
 
 interface MatchParams {
     id: string
 }
 
-interface ProductInterface {
-    _id: string
-    image: string
-    name: string
-    description: string
-    brand: string
-    category: string
-    price: number
-    countInStock: number
-    rating: number
-    numReviews: number
+interface RootState {
+    productDetails: ProductDetailsState
 }
 
-interface ProductScreenProps extends RouteComponentProps<MatchParams>, ProductInterface {
-    
-}
-
-const ProductScreen: React.FC<ProductScreenProps> = (props) => {
-    const [product, setProduct] = useState<ProductInterface>({
-        _id: '',
-        image: '',
-        name: '',
-        description: '',
-        brand: '',
-        category: '',
-        price: 0,
-        countInStock: 0,
-        rating: 0,
-        numReviews: 0,
-    });
+const ProductScreen: React.FC<RouteComponentProps<MatchParams>> = ({match}) => {
+    const dispatch = useDispatch();
+    const productDetails: ProductDetailsState = useSelector((state: RootState) => state.productDetails);
+    const {loading, product, error} = productDetails;
 
     useEffect(() => {
-        (async () => {
-            const {data} = await axios.get(`/api/products/${props.match.params.id}`);
+        dispatch(listProductDetails(match.params.id));
+    }, [dispatch, match]);
 
-            setProduct(data);
-        })();
-    }, [props.match]);
+    function render() {
+        return (
+            <React.Fragment>
+                <Link className="btn btn-ligh my-3" to="/">Go Back</Link>
+                {
+                    loading
+                        ? <Loader/>
+                        : error
+                        ? <Message variant="danger">error</Message>
+                        : renderRow()
+                }
+            </React.Fragment>
+        );
+    }
 
-    return (
-        <React.Fragment>
-            <Link className="btn btn-ligh my-3" to="/">Go Back</Link>
+    function renderRow() {
+        return (
             <Row>
                 <Col md={6}>
                     <Image src={product.image} alt={product.name} fluid/>
@@ -106,8 +99,10 @@ const ProductScreen: React.FC<ProductScreenProps> = (props) => {
                     </Card>
                 </Col>
             </Row>
-        </React.Fragment>
-    );
-}
+        );
+    }
+
+    return render();
+};
 
 export default ProductScreen;

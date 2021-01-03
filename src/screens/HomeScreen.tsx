@@ -7,7 +7,6 @@ import {ProductListState} from "../reducers/productReducers";
 import {listProducts} from "../actions/productAction";
 import {useDispatch, useSelector} from "react-redux";
 
-
 interface RootState {
     productList: ProductListState
 }

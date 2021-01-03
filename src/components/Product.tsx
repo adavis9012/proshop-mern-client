@@ -2,21 +2,9 @@ import React from "react";
 import Rating from "./Rating";
 import {Card} from "react-bootstrap";
 import {Link} from "react-router-dom";
+import {ProductInterface} from "../reducers/productReducers";
 
-interface ProductProps {
-    _id: string
-    image: string
-    name: string
-    description: string
-    brand: string
-    category: string
-    price: number
-    countInStock: number
-    rating: number
-    numReviews: number
-}
-
-const Product: React.FC<ProductProps> = (props) => {
+const Product: React.FC<ProductInterface> = (props) => {
     return (
         <Card className="my-3 p-3 rounded">
             <Link to={`/product/${props._id}`}>

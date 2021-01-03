@@ -45,7 +45,7 @@ const ProductScreen: React.FC<ProductScreenProps> = (props) => {
 
             setProduct(data);
         })();
-    }, []);
+    }, [props.match]);
 
     return (
         <React.Fragment>

@@ -1,47 +1,68 @@
-import React, {useEffect, useState } from 'react';
+import React, {useEffect} from 'react';
 import Product from "../components/Product";
 import {Col, Row} from "react-bootstrap";
-import axios from 'axios';
+import {useDispatch, useSelector} from "react-redux";
+import {listProducts} from "../actions/productAction";
+import {ProductInterface, ProductListState} from "../reducers/productReducers";
 
-interface ProductInterface {
-    _id: string
-    image: string
-    name: string
-    description: string
-    brand: string
-    category: string
-    price: number
-    countInStock: number
-    rating: number
-    numReviews: number
+
+interface RootState {
+    productList: ProductListState
 }
 
 const HomeScreen = () => {
-    const [products, setProducts] = useState<ProductInterface[]>([]);
+    const dispatch = useDispatch();
+    const productList: ProductListState = useSelector((state: RootState) => state.productList);
+    const {loading, error, products} = productList;
 
     useEffect(() => {
-        (async () => {
-            const {data} = await axios.get('/api/products');
-            
-            setProducts(data);
-        })();
-    }, []);
+        dispatch(listProducts());
+    }, [dispatch]);
 
+    function render() {
+        return (
+            <React.Fragment>
+                <h1>Latest Products</h1>
+                {
+                    loading ?
+                        renderLoading()
+                        : error
+                        ? renderError()
+                        : renderRow()
+                }
+            </React.Fragment>
+        );
+    }
 
-    return (
-        <React.Fragment>
-             <h1>Latest Products</h1>
+    function renderError() {
+        return (
+            <h3>{error}</h3>
+        );
+    }
+
+    function renderLoading() {
+        return (
+            <h2>Loading...</h2>
+        );
+    }
+
+    function renderRow() {
+        return (
             <Row>
-                {products.map(product => {
-                    return (
-                        <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
-                            <Product {...product} />
-                        </Col>
-                    )
-                })}
+                {
+                    products && products.map(product => {
+                        return (
+                            <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
+                                <Product {...product} />
+                            </Col>
+                        );
+                    })
+                }
             </Row>
-        </React.Fragment>
-    )
+        );
+    }
+
+    return render();
 };
 
 export default HomeScreen;

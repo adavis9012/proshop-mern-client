@@ -1,9 +1,11 @@
 import React, {useEffect} from 'react';
+import Loader from "../components/Loader";
+import Message from "../components/Message";
 import Product from "../components/Product";
 import {Col, Row} from "react-bootstrap";
-import {useDispatch, useSelector} from "react-redux";
+import {ProductListState} from "../reducers/productReducers";
 import {listProducts} from "../actions/productAction";
-import {ProductInterface, ProductListState} from "../reducers/productReducers";
+import {useDispatch, useSelector} from "react-redux";
 
 
 interface RootState {
@@ -25,7 +27,7 @@ const HomeScreen = () => {
                 <h1>Latest Products</h1>
                 {
                     loading ?
-                        renderLoading()
+                        <Loader/>
                         : error
                         ? renderError()
                         : renderRow()
@@ -36,13 +38,7 @@ const HomeScreen = () => {
 
     function renderError() {
         return (
-            <h3>{error}</h3>
-        );
-    }
-
-    function renderLoading() {
-        return (
-            <h2>Loading...</h2>
+            <Message variant="danger">{error}</Message>
         );
     }
 

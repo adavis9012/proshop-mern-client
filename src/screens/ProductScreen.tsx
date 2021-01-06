@@ -1,6 +1,5 @@
-import axios from 'axios';
 import React, {useEffect, useState} from 'react';
-import {Col, Row, Button, Image, ListGroup, Card} from 'react-bootstrap';
+import {Button, Card, Col, Form, Image, ListGroup, Row} from 'react-bootstrap';
 import {Link, RouteComponentProps} from 'react-router-dom';
 import Rating from '../components/Rating';
 import {useDispatch, useSelector} from "react-redux";
@@ -17,7 +16,8 @@ interface RootState {
     productDetails: ProductDetailsState
 }
 
-const ProductScreen: React.FC<RouteComponentProps<MatchParams>> = ({match}) => {
+const ProductScreen: React.FC<RouteComponentProps<MatchParams>> = ({history, match}) => {
+    const [quantity, setQuantity] = useState('0');
     const dispatch = useDispatch();
     const productDetails: ProductDetailsState = useSelector((state: RootState) => state.productDetails);
     const {loading, product, error} = productDetails;
@@ -38,6 +38,37 @@ const ProductScreen: React.FC<RouteComponentProps<MatchParams>> = ({match}) => {
                         : renderRow()
                 }
             </React.Fragment>
+        );
+    }
+
+    function renderQuantityForm() {
+        const inStockKeys = Array(product.countInStock).keys();
+
+        return (
+            <ListGroup.Item>
+                <Row>
+                    <Col>Qty</Col>
+                    <Col>
+                        <Form.Control
+                            as="select"
+                            value={quantity}
+                            onChange={(event => setQuantity(event.target.value))}
+                        >
+                            {
+                                Array.from(inStockKeys).map(value => {
+                                    const x = value + 1;
+
+                                    return (
+                                        <option key={x} value={x}>
+                                            {x}
+                                        </option>
+                                    )
+                                })
+                            }
+                        </Form.Control>
+                    </Col>
+                </Row>
+            </ListGroup.Item>
         );
     }
 
@@ -86,8 +117,12 @@ const ProductScreen: React.FC<RouteComponentProps<MatchParams>> = ({match}) => {
                                     </Col>
                                 </Row>
                             </ListGroup.Item>
+                            {
+                                product.countInStock > 0 && renderQuantityForm()
+                            }
                             <ListGroup.Item>
                                 <Button
+                                    onClick={addToCartHandler}
                                     className="btn-block"
                                     type="button"
                                     disabled={product.countInStock === 0}
@@ -100,6 +135,10 @@ const ProductScreen: React.FC<RouteComponentProps<MatchParams>> = ({match}) => {
                 </Col>
             </Row>
         );
+    }
+
+    function addToCartHandler() {
+        history.push(`/cart/${match.params.id}?qty=${quantity}`);
     }
 
     return render();

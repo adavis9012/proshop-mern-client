@@ -1,4 +1,5 @@
 import React from 'react';
+import CartScreen from "./screens/CartScreen";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import HomeScreen from "./screens/HomeScreen";
@@ -14,6 +15,7 @@ function App() {
           <Container>
             <Route path="/" component={HomeScreen} exact />
             <Route path="/product/:id" component={ProductScreen} />
+            <Route path={"/cart/:id?"} component={CartScreen} />
           </Container>
         </main>
         <Footer/>

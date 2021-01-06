@@ -21,6 +21,9 @@
 #IDE
 .idea
 
+#Cache Files
+.eslintcache
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

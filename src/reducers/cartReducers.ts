@@ -1,10 +1,15 @@
 import { CART_ADD_ITEM } from "../constants/carConstants";
 
-interface CartItem {
-    product?: string
+export interface CartItem {
+    product: string
+    name?: string
+    image?: string
+    price: number
+    countInStock?: string
+    quantity: number
 }
 
-interface CartState {
+export interface CartState {
     cartItems: CartItem[]
 }
 

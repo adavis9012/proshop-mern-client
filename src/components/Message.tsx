@@ -3,7 +3,7 @@ import {Alert} from "react-bootstrap";
 import {Variant} from "react-bootstrap/types";
 
 interface MessageProps{
-    variant: Variant
+    variant?: Variant
 }
 
 const Message: React.FC<React.PropsWithChildren<MessageProps>> = ({variant, children}) => {

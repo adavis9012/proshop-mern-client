@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import {Link, RouteComponentProps} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {addToCart} from "../actions/cartActions";
+import {addToCart, removeFromCart} from "../actions/cartActions";
 import {CartItem, CartState} from "../reducers/cartReducers";
 import {Button, Card, Col, Form, Image, ListGroup, Row} from "react-bootstrap";
 import Message from "../components/Message";
@@ -135,7 +135,7 @@ const CartScreen: React.FC<RouteComponentProps<MatchParams>> = ({match, location
     }
 
     function removeFromCartHandler(id: string) {
-        console.log(id);
+        dispatch(removeFromCart(id));
     }
 
     function checkoutHandler() {

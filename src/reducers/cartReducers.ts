@@ -1,4 +1,4 @@
-import { CART_ADD_ITEM } from "../constants/carConstants";
+import {CART_ADD_ITEM, CART_REMOVE_ITEM} from "../constants/carConstants";
 
 export interface CartItem {
     product: string
@@ -14,8 +14,9 @@ export interface CartState {
 }
 
 interface CartAction extends CartState{
-    type: 'CART_ADD_ITEM'
+    type: 'CART_ADD_ITEM' | 'CART_REMOVE_ITEM'
     item: CartItem
+    id?: string
 }
 
 export const cartReducer = (state: CartState= {cartItems: []}, action: CartAction) => {
@@ -36,6 +37,11 @@ export const cartReducer = (state: CartState= {cartItems: []}, action: CartActio
                     ...state,
                     cartItems: [...state.cartItems, item],
                 }
+            }
+        case CART_REMOVE_ITEM:
+            return {
+                ...state,
+                cartItems: state.cartItems.filter(item => item.product !== action.id),
             }
         default:
             return state;

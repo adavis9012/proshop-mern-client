@@ -20,7 +20,7 @@ export interface UserLoginInterface {
 
 export interface UserLoginState {
     loading?: boolean
-    userInfo?: UserLoginInterface[]
+    userInfo?: UserLoginInterface
     error?: string
 }
 

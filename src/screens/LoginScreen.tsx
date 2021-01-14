@@ -17,7 +17,7 @@ const LoginScreen: React.FC<RouteComponentProps> = ({location, history}) => {
     const [password, setPassword] = useState('');
     const dispatch = useDispatch();
     const userLogin: UserLoginState = useSelector((state: RootState) => state.userLogin);
-    const {loading, error, userInfo} = userLogin;
+    const {loading, error, userInfo} = userLogin || {};
     const redirect = location.search ? location.search.split('=')[1] : '/';
 
     useEffect(() => {

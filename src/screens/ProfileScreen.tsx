@@ -1,18 +1,23 @@
 import React, {useEffect, useState} from "react";
-import FormContainer from "../FormContainer";
-import {Button, Col, Form, Row} from "react-bootstrap";
-import {Link, RouteComponentProps} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import {UserDetailsState, UserLoginState} from "../reducers/userReducers";
-import {getUserDetails, register} from "../actions/userActions";
-import Message from "../components/Message";
 import Loader from "../components/Loader";
+import Message from "../components/Message";
+import {Button, Col, Form, Row} from "react-bootstrap";
+import {RouteComponentProps} from "react-router-dom";
+import {USER_UPDATE_PROFILE_RESET} from "../constants/userConstants";
+import {UserDetailsState, UserLoginState, UserUpdateProfileState} from "../reducers/userReducers";
+import {getUserDetails, updateUserProfile} from "../actions/userActions";
+import {useDispatch, useSelector} from "react-redux";
 
 interface UserDetailsSelector {
     userDetails: UserLoginState
 }
+
 interface UserLoginSelector {
     userLogin: UserLoginState
+}
+
+interface UserUpdateProfileSelector {
+    userUpdateProfile: UserUpdateProfileState
 }
 
 const ProfileScreen: React.FC<RouteComponentProps> = ({history}) => {
@@ -24,21 +29,24 @@ const ProfileScreen: React.FC<RouteComponentProps> = ({history}) => {
     const dispatch = useDispatch();
     const userDetails: UserDetailsState = useSelector((state: UserDetailsSelector) => state.userDetails);
     const userLogin: UserLoginState = useSelector((state: UserLoginSelector) => state.userLogin);
+    const userUpdateProfile: UserUpdateProfileState = useSelector((state: UserUpdateProfileSelector) => state.userUpdateProfile);
     const {loading, error, user} = userDetails || {};
     const {userInfo} = userLogin || {};
+    const {success} = userUpdateProfile || {};
 
     useEffect(() => {
-        if(!userInfo) {
+        if (!userInfo) {
             history.push('/login');
         } else {
-            if(!user?.name) {
+            if (!user?.name || success) {
+                dispatch({type: USER_UPDATE_PROFILE_RESET})
                 dispatch(getUserDetails('profile'));
             } else {
                 setName(user.name);
                 setEmail(user.email);
             }
         }
-    }, [dispatch, history, userInfo, user?.name, user?.email]);
+    }, [dispatch, history, userInfo, user?.name, user?.email, success]);
 
     function render() {
         return (
@@ -46,8 +54,9 @@ const ProfileScreen: React.FC<RouteComponentProps> = ({history}) => {
                 <Col md={3}>
                     <h1>User Profile</h1>
                     {message && renderMessage()}
+                    {success && renderSuccessMessage()}
                     {error && renderErrorMessage()}
-                    {loading && <Loader />}
+                    {loading && <Loader/>}
                     <Form onSubmit={submitHandler}>
                         <Form.Group controlId="name">
                             <Form.Label>Name</Form.Label>
@@ -101,6 +110,14 @@ const ProfileScreen: React.FC<RouteComponentProps> = ({history}) => {
         );
     }
 
+    function renderSuccessMessage() {
+        return (
+            <Message variant="success">
+                Profile Updated
+            </Message>
+        );
+    }
+
     function renderErrorMessage() {
         return (
             <Message variant="danger">
@@ -112,12 +129,12 @@ const ProfileScreen: React.FC<RouteComponentProps> = ({history}) => {
     function submitHandler(event: React.FormEvent) {
         event.preventDefault();
 
-        if(password !== confirmPassword) {
+        if (password !== confirmPassword) {
             return setMessage('Passwords do not match')
         }
 
         setMessage('');
-        // dispatch(register(name, email, password));
+        dispatch(updateUserProfile({_id: user?._id, name, email, password}));
     }
 
     return render();
